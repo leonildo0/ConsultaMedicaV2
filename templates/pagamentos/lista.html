@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Pagamentos{% endblock %}
+
+{% block content %}
+<h1>Pagamentos</h1>
+
+<a href="{% url 'pagamentos_criar' %}">➕ Novo Pagamento</a>
+
+<div class="card">
+    <table width="100%" cellpadding="10">
+        <tr>
+            <th>Consulta</th>
+            <th>Paciente</th>
+            <th>Valor</th>
+            <th>Forma</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+
+        {% for pagamento in pagamentos %}
+        <tr>
+            <td>{{ pagamento.consulta.data|date:"d/m/Y" }}</td>
+            <td>{{ pagamento.consulta.paciente.nome }}</td>
+            <td>R$ {{ pagamento.valor }}</td>
+            <td>{{ pagamento.get_forma_pagamento_display }}</td>
+            <td>
+                {% if pagamento.pago %}
+                    ✅ Pago
+                {% else %}
+                    ❌ Pendente
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'pagamentos_editar' pagamento.id %}">✏️</a>
+                |
+                <a href="{% url 'pagamentos_excluir' pagamento.id %}">🗑</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">Nenhum pagamento registrado</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

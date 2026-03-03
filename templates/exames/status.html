@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Status do Exame{% endblock %}
+
+{% block content %}
+<h1>Status do Exame</h1>
+
+<div class="card">
+    <p><strong>Exame:</strong> {{ exame_atendimento.exame.nome }}</p>
+    <p><strong>Status atual:</strong> {{ exame_atendimento.get_status_display }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <select name="status">
+            <option value="solicitado">Solicitado</option>
+            <option value="realizado">Realizado</option>
+            <option value="entregue">Entregue</option>
+        </select>
+
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+{% endblock %}

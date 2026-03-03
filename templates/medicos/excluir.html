@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Médico{% endblock %}
+
+{% block content %}
+<h1>Excluir Médico</h1>
+
+<div class="card">
+    <p>Tem certeza que deseja excluir <strong>{{ medico.nome }}</strong>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">🗑 Confirmar</button>
+        <a href="{% url 'medicos_lista' %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Médicos{% endblock %}
+
+{% block content %}
+<h1>Médicos</h1>
+
+<a href="{% url 'medicos_criar' %}">➕ Novo Médico</a>
+
+<div class="card">
+    <table width="100%" cellpadding="10">
+        <tr>
+            <th>Nome</th>
+            <th>CRM</th>
+            <th>Especialidade</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+        </tr>
+
+        {% for medico in medicos %}
+        <tr>
+            <td>{{ medico.nome }}</td>
+            <td>{{ medico.crm }}</td>
+            <td>{{ medico.especialidade }}</td>
+            <td>{{ medico.telefone }}</td>
+            <td>
+                <a href="{% url 'medicos_editar' medico.id %}">✏️ Editar</a>
+                |
+                <a href="{% url 'medicos_excluir' medico.id %}">🗑 Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Nenhum médico cadastrado</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

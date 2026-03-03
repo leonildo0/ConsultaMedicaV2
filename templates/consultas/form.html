@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Consulta{% endblock %}
+
+{% block content %}
+<h1>Consulta</h1>
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+
+        <p>
+            <strong>Data:</strong><br>
+            {{ form.data }}
+        </p>
+
+        <p>
+            <strong>Paciente:</strong><br>
+            {{ form.paciente }}
+        </p>
+
+        <p>
+            <strong>Médico:</strong><br>
+            <select name="medico" id="id_medico">
+                <option value="">Selecione a data primeiro</option>
+            </select>
+        </p>
+
+        <button type="submit">💾 Salvar</button>
+    </form>
+</div>
+
+<script>
+document.getElementById("id_data").addEventListener("change", function() {
+    let data = this.value;
+
+    fetch(`/ajax/carregar-medicos/?data=${data}`)
+        .then(response => response.json())
+        .then(data => {
+
+            let medicoSelect = document.getElementById("id_medico");
+            medicoSelect.innerHTML = "";
+
+            if (data.medicos.length === 0) {
+                medicoSelect.innerHTML = "<option>Nenhum médico disponível</option>";
+            } else {
+                data.medicos.forEach(function(medico) {
+                    let option = document.createElement("option");
+                    option.value = medico.id;
+                    option.textContent = medico.nome;
+                    medicoSelect.appendChild(option);
+                });
+            }
+        });
+});
+</script>
+
+{% endblock %}

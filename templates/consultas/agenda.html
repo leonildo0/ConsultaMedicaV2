@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Consultas{% endblock %}
+
+{% block content %}
+<h1>Consultas</h1>
+
+<a href="{% url 'consultas_criar' %}">➕ Nova Consulta</a>
+
+
+<div class="card">
+    <table width="100%" cellpadding="10">
+        <tr>
+            <th>Data</th>
+            <th>Paciente</th>
+            <th>Médico</th>
+            <th>Ações</th>
+        </tr>
+
+        {% for consulta in consultas %}
+        <tr>
+            <td>{{ consulta.data|date:"d/m/Y" }}</td>
+            <td>{{ consulta.paciente.nome }}</td>
+            <td>{{ consulta.medico.nome }}</td>
+            <td>
+                <a href="{% url 'consultas_editar' consulta.id %}">✏️ Editar</a>
+                |
+                <a href="{% url 'consultas_excluir' consulta.id %}">🗑 Excluir</a>
+                |
+                <a href="{% url 'atendimento_consulta' consulta.id %}">🩺 Atender</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Nenhuma consulta agendada</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

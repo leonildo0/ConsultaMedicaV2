@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Pagamento{% endblock %}
+
+{% block content %}
+<h1>Excluir Pagamento</h1>
+
+<div class="card">
+    <p>Deseja excluir este pagamento?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">🗑 Confirmar</button>
+        <a href="{% url 'pagamentos_lista' %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

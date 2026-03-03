@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Histórico do Paciente{% endblock %}
+
+{% block content %}
+
+<h1>Histórico do Paciente</h1>
+
+<!-- DADOS DO PACIENTE -->
+<div class="card">
+    <h3>🧑 Dados do Paciente</h3>
+    <p><strong>Nome:</strong> {{ paciente.nome }}</p>
+    <p><strong>CPF:</strong> {{ paciente.cpf }}</p>
+    <p><strong>Telefone:</strong> {{ paciente.telefone }}</p>
+</div>
+
+<br>
+
+<!-- CONSULTAS -->
+<div class="card">
+    <h3>📅 Consultas e Atendimentos</h3>
+
+    {% for consulta in consultas %}
+        <div style="border-bottom: 1px solid #ccc; padding: 10px 0;">
+            <p>
+                <strong>Data:</strong> {{ consulta.data|date:"d/m/Y" }} <br>
+                <strong>Médico:</strong> {{ consulta.medico.nome }} <br>
+                <strong>Especialidade:</strong> {{ consulta.medico.especialidade }}
+            </p>
+
+            {% if consulta.atendimento %}
+                <p><strong>🩺 Atendimento</strong></p>
+
+                <p>
+                    <strong>Descrição:</strong><br>
+                    {{ consulta.atendimento.descricao }}
+                </p>
+
+                <p>
+                    <strong>🧪 Exames:</strong><br>
+                    {% for exame in consulta.atendimento.exames_solicitados.all %}
+                    • {{ exame.exame.nome }}
+                    — <strong>{{ exame.get_status_display }}</strong>
+                    <a href="{% url 'atendimento_exame_status' exame.id %}">✏️</a>
+                    <br>
+    {% empty %}
+        Nenhum exame solicitado
+    {% endfor %}
+</p>
+
+            {% else %}
+                <p style="color: #999;">
+                    Atendimento ainda não realizado
+                </p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Nenhuma consulta encontrada.</p>
+    {% endfor %}
+</div>
+
+
+<br>
+
+<!-- PAGAMENTOS -->
+<div class="card">
+    <h3>💰 Pagamentos</h3>
+
+    <table width="100%" cellpadding="8">
+        <tr>
+            <th>Consulta</th>
+            <th>Valor</th>
+            <th>Forma</th>
+            <th>Status</th>
+        </tr>
+
+        {% for pagamento in pagamentos %}
+        <tr>
+            <td>{{ pagamento.consulta.data|date:"d/m/Y" }}</td>
+            <td>R$ {{ pagamento.valor }}</td>
+            <td>{{ pagamento.get_forma_pagamento_display }}</td>
+            <td>
+                {% if pagamento.pago %}
+                    ✅ Pago
+                {% else %}
+                    ❌ Pendente
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Nenhum pagamento registrado</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <hr>
+    <h4>💵 Total pago: <strong>R$ {{ total_gasto }}</strong></h4>
+</div>
+
+{% endblock %}

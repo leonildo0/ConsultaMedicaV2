@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Pagamento{% endblock %}
+
+{% block content %}
+<h1>Pagamento</h1>
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">💾 Salvar</button>
+        <a href="{% url 'pagamentos_lista' %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

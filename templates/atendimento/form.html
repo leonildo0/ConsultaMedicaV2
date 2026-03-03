@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Atendimento{% endblock %}
+
+{% block content %}
+
+<h1>🩺 Atendimento</h1>
+
+<div class="card">
+    <h3>Consulta</h3>
+    <p><strong>Paciente:</strong> {{ consulta.paciente.nome }}</p>
+    <p><strong>Médico:</strong> {{ consulta.medico.nome }}</p>
+    <p><strong>Data:</strong> {{ consulta.data|date:"d/m/Y" }}</p>
+</div>
+
+<br>
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+
+        <p>
+            <strong>Descrição do Atendimento</strong><br>
+            {{ form.descricao }}
+        </p>
+
+        <p>
+            <strong>Exames Solicitados</strong><br>
+            {{ form.exames }}
+        </p>
+
+        <button type="submit">💾 Salvar Atendimento</button>
+        <a href="{% url 'consultas_agenda' %}">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}

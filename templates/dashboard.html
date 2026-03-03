@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="cards">
+    <div class="card">
+        <h3>Pacientes</h3>
+        <p>{{ total_pacientes }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Médicos</h3>
+        <p>{{ total_medicos }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Consultas Hoje</h3>
+        <p>{{ total_consultas_hoje }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Exames Pendentes</h3>
+        <p>{{ total_exames_pendentes }}</p>
+    </div>
+</div>
+
+<h2 style="margin-top:30px;">Consultas de Hoje</h2>
+
+<div class="card">
+    <table width="100%" cellpadding="10">
+        <tr>
+            <th>Data</th>
+            <th>Paciente</th>
+            <th>Médico</th>
+        </tr>
+
+        {% for consulta in consultas_hoje %}
+        <tr>
+            <td>{{ consulta.data|date:"d/m/Y" }}</td>
+            <td>{{ consulta.paciente.nome }}</td>
+            <td>{{ consulta.medico.nome }}</td>
+        </tr>
+         
+        {% empty %}
+        <tr>
+            <td colspan="3">Nenhuma consulta agendada para hoje</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<h2 style="margin-top:30px;">Exames Pendentes</h2>
+
+<div class="card">
+    <table width="100%" cellpadding="10">
+        <tr>
+            <th>Paciente</th>
+            <th>Exame</th>
+            <th>Status</th>
+        </tr>
+
+        {% for item in exames_pendentes %}
+        <tr>
+            <td>{{ item.atendimento.consulta.paciente.nome }}</td>
+            <td>{{ item.exame.nome }}</td>
+            <td>
+                {% if item.status == 'solicitado' %}
+                    <span style="color:orange;">Solicitado</span>
+                {% elif item.status == 'realizado' %}
+                    <span style="color:blue;">Realizado</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Nenhum exame pendente 🎉</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<h2 style="margin-top:40px;">Indicadores Mensais</h2>
+
+<div class="graficos-container">
+    
+    <div class="card">
+        <h3>📊 Consultas por Mês</h3>
+        <canvas id="graficoConsultas"></canvas>
+    </div>
+
+    <div class="card">
+        <h3>📈 Exames por Mês</h3>
+        <canvas id="graficoExames"></canvas>
+    </div>
+
+</div>
+
+<!-- ============================= -->
+<!-- CHART JS -->
+<!-- ============================= -->
+{{ labels_consultas|json_script:"labels-consultas" }}
+{{ dados_consultas|json_script:"dados-consultas" }}
+
+{{ labels_exames|json_script:"labels-exames" }}
+{{ dados_exames|json_script:"dados-exames" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+<script>
+    Chart.register(ChartDataLabels);
+
+    const labelsConsultas = JSON.parse(
+        document.getElementById('labels-consultas').textContent
+    );
+
+    const dadosConsultas = JSON.parse(
+        document.getElementById('dados-consultas').textContent
+    );
+
+    new Chart(document.getElementById('graficoConsultas'), {
+        type: 'bar',
+        data: {
+            labels: labelsConsultas,
+            datasets: [{
+                label: 'Consultas no mês',
+                data: dadosConsultas
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0, 
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    formatter: function(value) {
+                        return value; 
+                    }
+                }
+            }
+        }
+    });
+
+    const labelsExames = JSON.parse(
+        document.getElementById('labels-exames').textContent
+    );
+
+    const dadosExames = JSON.parse(
+        document.getElementById('dados-exames').textContent
+    );
+
+    new Chart(document.getElementById('graficoExames'), {
+        type: 'line',
+        data: {
+            labels: labelsExames,
+            datasets: [{
+                label: 'Exames no mês',
+                data: dadosExames,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0,
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    align: 'top',
+                    formatter: function(value) {
+                        return value;
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+
+{% endblock %}

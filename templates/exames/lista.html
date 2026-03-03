@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Exames{% endblock %}
+
+{% block content %}
+<h1>🧪 Exames</h1>
+
+<a href="{% url 'exames_criar' %}">➕ Novo Exame</a>
+
+<div class="card">
+    <table width="100%" cellpadding="8">
+        <tr>
+            <th>Nome</th>
+            <th>Valor</th>
+            <th>Ações</th>
+            
+        </tr>
+
+        {% for exame in exames %}
+        <tr>
+            <td>{{ exame.nome }}</td>
+            <td>R$ {{ exame.valor }}</td>
+            <td>
+                <a href="{% url 'exames_editar' exame.id %}">✏️</a> |
+                <a href="{% url 'exames_excluir' exame.id %}">🗑</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Nenhum exame cadastrado</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

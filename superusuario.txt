@@ -1,0 +1,12 @@
+Username (leave blank to use 'leonildo'): leonildo
+Email address: leo@email.com
+Password:xamp1234
+
+admin
+lorde123
+
+Medico2
+lorde123
+
+Atendente2
+lorde123
